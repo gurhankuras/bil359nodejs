@@ -18,6 +18,8 @@ export default async function getCompanyOffers (req: Request, res: Response) {
         // @ts-ignore
         result.map((row) => {
             // @ts-ignore
+            row.id = Number.parseInt(row.id)
+            // @ts-ignore
             if (!endResult[row.id]) {
                 // @ts-ignore
                 endResult[row.id] = {

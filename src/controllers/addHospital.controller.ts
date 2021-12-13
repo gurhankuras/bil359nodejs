@@ -2,6 +2,7 @@
 import {Request, Response} from 'express'
 import db from '../db/db'
 
+// query mysql'de calisirken burada sql syntax hatasi diyor
 export default async function addHospital(req: Request, res: Response) {
     console.log("ADD OFFER RUN")
     const hospitalName = req.body.hospitalName
