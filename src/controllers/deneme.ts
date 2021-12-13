@@ -32,7 +32,8 @@ export default async function deneme(req: Request, res: Response) {
 
         // @ts-ignore
         if (result.length == 0) {
-            return res.sendStatus(400)
+            console.log("buraya gırdı ")
+            return res.status(400).send({message: "Teklif Bulunamadi!"})
         }
 
         // @ts-ignore
