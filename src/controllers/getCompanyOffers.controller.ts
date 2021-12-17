@@ -1,14 +1,12 @@
 import {Request, Response} from 'express'
 import db from '../db/db'
+import  { queries } from '../db/queryTemplates'
 
 
 export default async function getCompanyOffers (req: Request, res: Response) {
-    const queryStr = `SELECT * 
-                        FROM Offer 
-                        JOIN Companies
-                        ON Offer.company_id = Companies.id`
+    const formattedQuery = queries.getAllCompanyOffers()
 
-    db.query(queryStr, (err, result) => {
+    db.query(formattedQuery, (err, result) => {
         if (err) {
             console.log(err)
             return res.sendStatus(400)

@@ -1,17 +1,22 @@
 import {Request, Response} from 'express'
 import db from '../db/db'
+import { queries } from '../db/queryTemplates'
+import bodyValidators from '../validators/bodyValidators';
+
 
 
 export default async function deleteCompany (req: Request, res: Response) {
-    const id = Number.parseInt(req.params.id) 
+    const {error, value} = bodyValidators.id.validate(req.params);
 
-    if (isNaN(id)) {
-        return res.sendStatus(400)
+    if (error) {
+        return res.status(422).send({message: "Gerekli bilgiler eksik ya da yanlış"});
     }
+    
+    const id = Number.parseInt(req.params.id);
 
-    const queryStr = `DELETE FROM Companies WHERE id = ${id}`
+    const formattedQuery = queries.deleteCompanyById(id)
 
-    db.query(queryStr, (err, result) => {
+    db.query(formattedQuery, (err, result) => {
         if (err) {
             return res.sendStatus(400)
         }

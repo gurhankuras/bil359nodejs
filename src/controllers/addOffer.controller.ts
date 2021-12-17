@@ -2,28 +2,30 @@
 
 import {Request, Response} from 'express'
 import db from '../db/db'
+import {queries} from '../db/queryTemplates'
+import bodyValidators from '../validators/bodyValidators'
 
 export default async function addOffer(req: Request, res: Response) {
     console.log("ADD OFFER RUN")
-    const name = req.body.name
-    const ageStart = req.body.ageStart
-    const ageEnd = req.body.ageEnd
-    const price = req.body.price
+
+    const {error, value} = bodyValidators.addOffer.validate(req.body);
+
+    if (error) {
+        return res.status(422).send({message: "Gerekli bilgiler eksik ya da yanlış"});
+    }
+
+    const name = <string> req.body.name
+    const ageStart = <number> req.body.ageStart
+    const ageEnd = <number> req.body.ageEnd
+    const price = <number> req.body.price
 
     console.log(req.body)
     
-    if (!name || !ageStart || !ageEnd || !price) {
-        return res.status(400).send({message: "Gerekli bilgiler eksik!"})
-    }
+    const formattedQuery = queries.addOffer({companyName: name, ageStart, ageEnd, price})                                               
 
-    const sqlStr = `INSERT INTO Offer 
-                    (age_start, age_end, price, company_id) 
-                    VALUES
-                    (${ageStart}, ${ageEnd}, ${price}, 
-                                                        (SELECT id
-                                                        FROM Companies
-                                                        WHERE company_name = '${name}' LIMIT 1))`
-    db.query(sqlStr, (err, result) => {
+    console.log(formattedQuery)
+    
+    db.query(formattedQuery, (err, result) => {
         if (err) {
             console.log(err)
             return res.status(400).send({message: "Bir hata oldu"})
@@ -41,3 +43,4 @@ export default async function addOffer(req: Request, res: Response) {
 
     })                                                        
 }
+

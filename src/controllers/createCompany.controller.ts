@@ -1,14 +1,20 @@
 import {Request, Response} from 'express'
 import db from '../db/db'
+import { queries } from '../db/queryTemplates'
+import bodyValidators from '../validators/bodyValidators';
 
 
 export default async function createCompany (req: Request, res: Response) {
-    const name = req.body.name
-    if (name == null) {
-        return res.sendStatus(400)
-    }
+    const {error, value} = bodyValidators.createCompany.validate(req.body);
 
-    db.query(`INSERT INTO Companies (company_name, image) VALUES ('${name}', '')`, (err, result) => {
+    if (error) {
+        return res.status(422).send({message: "Gerekli bilgiler eksik ya da yanlış"});
+    }
+    
+    const name = <string> req.body.name
+    const formattedQuery = queries.createCompany({companyName: name, image: ""})
+
+    db.query(formattedQuery, (err, result) => {
         if (err) {
             console.log(err)
             return res.sendStatus(400)

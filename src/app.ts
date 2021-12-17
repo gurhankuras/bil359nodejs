@@ -10,10 +10,11 @@ import deleteHospital from './controllers/deleteHospital.controller'
 import createCompany from './controllers/createCompany.controller'
 import getCompanyOffers from './controllers/getCompanyOffers.controller'
 import addOffer from './controllers/addOffer.controller'
-import deneme from './controllers/deneme'
+import deneme from './controllers/getOffersByAgeAndHospitalName'
 import getHospital from './controllers/getHospital.controller'
 import addHospital from './controllers/addHospital.controller'
-
+import getOffersByAgeAndHospitalName from './controllers/getOffersByAgeAndHospitalName'
+import {validationResult, body} from 'express-validator'
 // TODO: REFACTOR TO AVOID SQL INJECTION 
 
 const app = express()
@@ -32,15 +33,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.post('/', deneme)
-// TEST
-app.post('/api/companies/:id/offer', deneme)
+
+app.post('/api/companies/:id/offer', getOffersByAgeAndHospitalName)
 app.get('/api/offers', getCompanyOffers)
 app.post('/api/offers', addOffer)
 
 app.get('/api/companies/:id/hospitals', getCompanyHospitals)
+
+/////////
 app.delete('/api/hospitals/:id', deleteHospital)
 app.get('/api/hospitals/:id', getHospital)
 app.post('/api/hospitals', addHospital)
+/////////
 
 app.delete('/api/companies/:id', deleteCompany)
 app.get('/api/companies', getCompanies)
