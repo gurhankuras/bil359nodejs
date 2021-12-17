@@ -2,14 +2,15 @@ import {Request, Response} from 'express'
 import db from '../db/db'
 import { queries } from '../db/queryTemplates';
 import offset from '../utility/db_skip';
-import bodyValidators from '../validators/bodyValidators';
+import requestValidators from '../validators/requestValidators';
 
 
 export default async function getCompanies(req: Request, res: Response) {
 
-    const {error, value} = bodyValidators.getCompanies.validate(req.query);
+    const {error, value} = requestValidators.getCompanies.validate(req.query);
 
     if (error) {
+        console.log(error)
         return res.status(422).send({message: "Gerekli bilgiler eksik ya da yanlış"});
     }
 

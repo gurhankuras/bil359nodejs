@@ -3,12 +3,12 @@ import { omit } from 'lodash';
 import db from '../db/db'
 import { queries } from '../db/queryTemplates';
 import { processHospital } from '../db/util';
-import bodyValidators from '../validators/bodyValidators';
+import requestValidators from '../validators/requestValidators';
 
 
 export default async function getOffersByAgeAndHospitalName(req: Request, res: Response) {
 
-    const {error, value} = bodyValidators.getOffersByAgeAndHospitalName.validate(req.body);
+    const {error, value} = requestValidators.getOffersByAgeAndHospitalName.validate(req.body);
     if (error) {
         return res.status(422).send({message: "Gerekli bilgiler eksik ya da yanlış"});
     }

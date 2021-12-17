@@ -3,11 +3,11 @@ import {Request, Response} from 'express'
 import db from '../db/db'
 import  { queries } from '../db/queryTemplates'
 import { processHospital } from '../db/util'
-import bodyValidators from '../validators/bodyValidators';
+import requestValidators from '../validators/requestValidators';
 
 
 export default async function getHospital(req: Request, res: Response) {
-    const {error, value} = bodyValidators.id.validate(req.params);
+    const {error, value} = requestValidators.id.validate(req.params);
     if (error) {
         return res.status(422).send({message: "Gerekli bilgiler eksik ya da yanlış"});
     }

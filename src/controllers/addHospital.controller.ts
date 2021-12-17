@@ -2,12 +2,12 @@
 import {Request, Response} from 'express'
 import db from '../db/db'
 import { queries } from '../db/queryTemplates'
-import bodyValidators from '../validators/bodyValidators';
+import requestValidators from '../validators/requestValidators';
 
 export default async function addHospital(req: Request, res: Response) {
     console.log("ADD OFFER RUN")
 
-    const {error, value} = bodyValidators.addHospital.validate(req.body);
+    const {error, value} = requestValidators.addHospital.validate(req.body);
 
     if (error) {
         return res.status(422).send({message: "Gerekli bilgiler eksik ya da yanlış"});

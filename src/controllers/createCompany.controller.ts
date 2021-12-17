@@ -1,11 +1,11 @@
 import {Request, Response} from 'express'
 import db from '../db/db'
 import { queries } from '../db/queryTemplates'
-import bodyValidators from '../validators/bodyValidators';
+import requestValidators from '../validators/requestValidators';
 
 
 export default async function createCompany (req: Request, res: Response) {
-    const {error, value} = bodyValidators.createCompany.validate(req.body);
+    const {error, value} = requestValidators.createCompany.validate(req.body);
 
     if (error) {
         return res.status(422).send({message: "Gerekli bilgiler eksik ya da yanlış"});

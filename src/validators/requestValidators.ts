@@ -1,5 +1,4 @@
 import Joi from "joi";
-import deleteHospital from "../controllers/deleteHospital.controller";
 
 const addOffer = Joi.object({
     ageStart: Joi.number()
@@ -42,7 +41,7 @@ const getOffersByAgeAndHospitalName = Joi.object({
     hospitalName: Joi.string().required()
 })
 
- const bodyValidators = {
+ const requestValidators = {
     addOffer: addOffer,
     addHospital: addHospital,
     createCompany: createCompany,
@@ -52,4 +51,4 @@ const getOffersByAgeAndHospitalName = Joi.object({
     
 }
 
-export default bodyValidators
+export default requestValidators
