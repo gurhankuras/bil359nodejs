@@ -1,4 +1,3 @@
-
 import {Request, Response} from 'express'
 import db from '../db/db'
 import  { queries } from '../db/queryTemplates'
@@ -6,33 +5,43 @@ import { processHospital } from '../db/util'
 import requestValidators from '../validators/requestValidators';
 const halson = require('halson')
 
-export default async function getHospital(req: Request, res: Response) {
+export default async function getOffer(req: Request, res: Response) {
+    const ageStart = <number> Number.parseInt(<string> req.body.ageStart)
+    const ageEnd = <number> Number.parseInt(<string> req.body.ageEnd)
+    const companyName = <string> req.body.companyName
+    /*
     const {error, value} = requestValidators.id.validate(req.params);
     if (error) {
         return res.status(422).send({message: "Gerekli bilgiler eksik ya da yanlış"});
     }
 
-    const id = Number.parseInt(req.params.id) 
+    */
 
-    const formattedQuery = queries.getHospitalById(id);
+    const formattedQuery = queries.getOffer({companyName, ageStart, ageEnd});
 
-    db.query(formattedQuery, (err, hospitals) => {
+    db.query(formattedQuery, (err, offers) => {
         if (err) {
             return res.sendStatus(400)
         }
         // @ts-ignore
-        if (hospitals.length == 0) {
+        if (offers.length == 0) {
             return res.sendStatus(400)
         }
     
         // @ts-ignore
-        let hospital = hospitals[0]
+        let offer = offers[0]
        
         // offer.hospital = processHospital(hospital)
         
-        let processedHospital = processHospital(hospital)
+        if (offer['previous_value']) {
+            offer['previous_value'] = Number.parseFloat(offer['previous_value'])
+        }
+
+        if (offer['price']) {
+            offer['price'] = Number.parseFloat(offer['price'])
+        }
         
-        let relProcessedHospital = halson(processedHospital)
+        let relProcessedOffer = halson(offer)
         .addLink('self', '/joyent/node')
         .addLink('author', {
             href: '/joyent',
@@ -41,8 +50,7 @@ export default async function getHospital(req: Request, res: Response) {
         
     
         //console.log(offer)
-        return res.send(relProcessedHospital)
+        return res.send(relProcessedOffer)
     })
 
 }
-

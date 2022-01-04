@@ -13,6 +13,10 @@ import addOffer from './controllers/addOffer.controller'
 import getHospital from './controllers/getHospital.controller'
 import addHospital from './controllers/addHospital.controller'
 import getOffersByAgeAndHospitalName from './controllers/getOffersByAgeAndHospitalName'
+import getCompanyDiscounts from './controllers/getCompanyDiscounts'
+import addDiscount from './controllers/addDiscount.controller'
+import getOffer from './controllers/getOffer.controller'
+import dropCompanyDiscounts from './controllers/dropCompanyDiscounts.controller'
 
 // TODO: TEST
 // TODO: eliminate most of the @ts-ignore comments
@@ -37,6 +41,7 @@ app.get('/health', (req: Request, res: Response) => { return res.sendStatus(200)
 // offers
 app.post('/api/companies/:id/offer', getOffersByAgeAndHospitalName)
 app.get('/api/offers', getCompanyOffers)
+app.post('/api/getoffer', getOffer)
 app.post('/api/offers', addOffer)
 
 // hospitals
@@ -44,6 +49,12 @@ app.get('/api/companies/:id/hospitals', getCompanyHospitals)
 app.delete('/api/hospitals/:id', deleteHospital)
 app.get('/api/hospitals/:id', getHospital)
 app.post('/api/hospitals', addHospital)
+
+// discounts
+app.get('/api/companies/discounts', getCompanyDiscounts)
+app.get('/api/discounts')
+app.delete('/api/companies/:id/discounts', dropCompanyDiscounts)
+app.put('/api/offers', addDiscount)
 
 // companies
 app.delete('/api/companies/:id', deleteCompany)

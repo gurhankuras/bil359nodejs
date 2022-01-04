@@ -4,7 +4,6 @@ import { queries } from '../db/queryTemplates'
 import requestValidators from '../validators/requestValidators';
 
 
-
 export default async function deleteCompany (req: Request, res: Response) {
     const {error, value} = requestValidators.id.validate(req.params);
 

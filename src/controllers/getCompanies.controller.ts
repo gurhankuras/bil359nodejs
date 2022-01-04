@@ -6,12 +6,13 @@ import requestValidators from '../validators/requestValidators';
 
 
 export default async function getCompanies(req: Request, res: Response) {
-
+    console.log(req.headers);
+    //return res.status(400).send({error: "Gerekli bilgiler eksik ya da yanlış", status: 400});
     const {error, value} = requestValidators.getCompanies.validate(req.query);
 
     if (error) {
         console.log(error)
-        return res.status(422).send({message: "Gerekli bilgiler eksik ya da yanlış"});
+        return res.status(422).send({error: "Gerekli bilgiler eksik ya da yanlış", status: 422});
     }
 
     const name = <string> req.query.name;

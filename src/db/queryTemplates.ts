@@ -15,8 +15,16 @@ enum QueryTemplates {
     addHospitalWithAffiliatedCompanies = "",
     getCompanyHospitals = "",
 
+    // discount
+    addDiscount = `UPDATE Offer SET price = ? WHERE id = ? AND price = ?`,
+    getAllCompanyDiscounts = `SELECT * FROM Offer 
+    JOIN Companies 
+    ON Offer.company_id = Companies.id
+    WHERE Offer.price < Offer.previous_value`,
+    dropCompanyDiscounts = `UPDATE Offer SET previous_value = NULL WHERE company_id = ?`,
 
     // offers
+    getOffer = `SELECT * FROM Offer WHERE company_id = (SELECT id FROM Companies WHERE company_name = ? LIMIT 1) AND age_start = ? AND age_end = ? LIMIT 1`,
     addOffer = `INSERT INTO Offer (age_start, age_end, price, company_id) VALUES (?, ?, ?, 
                 (SELECT id
                 FROM Companies
@@ -34,6 +42,32 @@ enum QueryTemplates {
                                                                             FROM Hospitals
                                                                             WHERE hospital_name = ?))`,
 }
+/*
+ // discount
+ addDiscount = `UPDATE Offer SET price = ? WHERE id = ? AND price = ?`,
+ getAllCompanyDiscounts = `SELECT * FROM Offer 
+ JOIN Companies 
+ ON Offer.company_id = Companies.id
+ WHERE Offer.price < Offer.previous_value`,
+*/
+
+function dropCompanyDiscounts(id: number) {
+    return db.format(QueryTemplates.dropCompanyDiscounts, [id]);
+}
+
+function getOffer({companyName, ageStart, ageEnd}: {companyName: string, ageStart: number, ageEnd: number}) {
+    return db.format(QueryTemplates.getOffer, [companyName, ageStart, ageEnd]);
+}
+
+function addDiscount({discountedPrice, id, currentPrice}: {discountedPrice: number, id: number, currentPrice: number}) {
+    return db.format(QueryTemplates.addDiscount, [discountedPrice, id, currentPrice]);
+}
+
+
+function getAllCompanyDiscounts() {
+    return db.format(QueryTemplates.getAllCompanyDiscounts);
+}
+
 
 function createCompany({companyName, image}:  {companyName: string, image: string}): string {
     return db.format(QueryTemplates.createCompany, [companyName, image]);
@@ -120,6 +154,11 @@ export const queries = {
     getHospitalsByCompany: getHospitalsByCompany,
     addHospital: addHospital,
 
+    getAllCompanyDiscounts: getAllCompanyDiscounts,
+    addDiscount: addDiscount,
+    dropCompanyDiscounts: dropCompanyDiscounts,
+
+    getOffer: getOffer,
     addOffer: addOffer,
     getAllCompanyOffers: getAllCompanyOffers,
     getOffersByAgeAndHospitalName: getOffersByAgeAndHospitalName
