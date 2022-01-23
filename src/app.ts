@@ -28,7 +28,16 @@ const port = process.env.PORT || 3000
 db.connect((err) => {
     if (err) {
         console.log(err)
+        return;
     }
+    console.log("Connected!");
+    /*
+    db.query("CREATE DATABASE IF NOT EXISTS sigorta_db", function (err, result) {
+        if (err) throw err;
+        console.log("Database created");
+        return;
+    });
+    */
     console.log("database connected!")
 })
 

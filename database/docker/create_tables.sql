@@ -1,5 +1,7 @@
+CREATE DATABASE IF NOT EXISTS sigorta_db;
 
-use sigorta_db;
+use sigorta_db
+
 -- DROP TABLE Companies
 
 CREATE TABLE Companies (
@@ -100,4 +102,48 @@ INSERT INTO CompanyHospital (company_id, hospital_id) VALUES (1, 6);
 
 INSERT INTO CompanyHospital (company_id, hospital_id) VALUES (4, 5);
 
-DELETE FROM Companies WHERE id = 4
+DELETE FROM Companies WHERE id = 4;
+
+
+ALTER TABLE Offer ADD previous_value numeric(19,4);
+ALTER TABLE Offer ADD changing int DEFAULT 0;
+delimiter //
+CREATE TRIGGER before_price_updated BEFORE UPDATE ON Offer
+       FOR EACH ROW
+       IF(OLD.price <> NEW.price) THEN
+			SET NEW.previous_value = (SELECT price FROM Offer WHERE id = NEW.id);
+	   END IF//
+delimiter ;
+
+delimiter //
+CREATE TRIGGER before_delete_discount BEFORE UPDATE ON Offer
+       FOR EACH ROW
+       IF(NEW.changing = 1 AND OLD.previous_value IS NOT NULL) THEN
+			SET NEW.price = OLD.previous_value;
+            SET NEW.previous_value = NULL;
+            SET NEW.changing = 0;
+	   END IF//
+delimiter ;
+
+		
+-- DROP TRIGGER before_price_updated;
+-- SHOW TRIGGERS
+-- UPDATE Offer SET Offer.price = 900.0 WHERE id = 10
+UPDATE Offer SET price = 800.0 WHERE id = 10 AND price = 900.0;
+
+-- get all company discounts
+SELECT * FROM Offer 
+JOIN Companies 
+ON Offer.company_id = Companies.id
+WHERE Offer.price < Offer.previous_value;
+
+-- UPDATE Offer SET previous_value = NULL WHERE company_id = 2;
+
+
+SELECT * FROM Offer WHERE company_id = (SELECT id FROM Companies WHERE company_name = 'Axa Sigorta' LIMIT 1) AND age_start = 61 AND age_end = 70 LIMIT 1;
+
+SELECT user,authentication_string,plugin,host FROM mysql.user;
+/*
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Current-Root-Password';
+FLUSH PRIVILEGES;
+*/

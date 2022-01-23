@@ -21,8 +21,8 @@ enum QueryTemplates {
     JOIN Companies 
     ON Offer.company_id = Companies.id
     WHERE Offer.price < Offer.previous_value`,
-    dropCompanyDiscounts = `UPDATE Offer SET previous_value = NULL WHERE company_id = ?`,
-
+    //dropCompanyDiscounts = `UPDATE Offer SET previous_value = NULL WHERE company_id = ?`,
+    dropCompanyDiscounts = `UPDATE Offer SET changing = 1 WHERE company_id = ? AND previous_value IS NOT NULL`,
     // offers
     getOffer = `SELECT * FROM Offer WHERE company_id = (SELECT id FROM Companies WHERE company_name = ? LIMIT 1) AND age_start = ? AND age_end = ? LIMIT 1`,
     addOffer = `INSERT INTO Offer (age_start, age_end, price, company_id) VALUES (?, ?, ?, 

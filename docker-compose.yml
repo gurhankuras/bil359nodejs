@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  mysql_server:
+    platform: linux/x86_64
+    build: ./database/docker
+    environment:
+      MYSQL_ROOT_PASSWORD: deneme
+      MYSQL_USER: 'root'
+      MYSQL_PASSWORD: deneme
+      MYSQL_DATABASE: sigorta_db
+      
+  node:
+    build: .
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - '/app/node_modules'
+    depends_on:
+      - mysql_server
